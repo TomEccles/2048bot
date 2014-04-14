@@ -36,7 +36,7 @@ namespace _2048
                         break;
                     }
                 }
-                catch (StateElementReferenceExpection)
+                catch (StaleElementReferenceException)
                 {
                     System.Threading.Thread.Sleep(100);
                 }
