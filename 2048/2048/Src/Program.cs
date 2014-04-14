@@ -36,7 +36,7 @@ namespace _2048
                         break;
                     }
                 }
-                catch (InvalidElementStateException)
+                catch (StateElementReferenceExpection)
                 {
                     System.Threading.Thread.Sleep(100);
                 }
