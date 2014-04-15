@@ -69,6 +69,7 @@
     <Compile Include="Src\Controller.cs" />
     <Compile Include="Src\EvaluatorStrategy.cs" />
     <Compile Include="Src\GameBoard.cs" />
+    <Compile Include="Src\GameLogger.cs" />
     <Compile Include="Src\GameNode.cs" />
     <Compile Include="Src\MockController.cs" />
     <Compile Include="Src\MoveNode.cs" />

@@ -19,13 +19,14 @@ namespace _2048
     {
         public static Random rand = new Random();
 
-        private static void playGame(Controller controller, Strategy strategy)
+        private static void playGame(Controller controller, Strategy strategy, GameLogger logger)
         {
             while (true)
             {
                 try
                 {
                     var board = controller.getBoard();
+                    logger.append(board);
                     var move = strategy.getDirection(board);
                     if (move != Direction.None)
                     {
@@ -48,8 +49,11 @@ namespace _2048
             var controller = new RealController();
             var evaluator = new SnakeEvaluatorTwo();
             var strategy = new TreeStrategy(evaluator, 100);
+            var logger = new GameLogger();
 
-            playGame(controller, strategy);
+            playGame(controller, strategy, logger);
+
+            logger.output();
         }
     }
 }

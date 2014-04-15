@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium;
-using _2048.Src;
 
 namespace _2048
 {
