@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Src\AppearNode.cs" />
+    <Compile Include="Src\ArrayHelper.cs" />
     <Compile Include="Src\Controller.cs" />
     <Compile Include="Src\EvaluatorStrategy.cs" />
     <Compile Include="Src\GameBoard.cs" />

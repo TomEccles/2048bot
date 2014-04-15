@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium;
+using _2048.Src;
 
 namespace _2048
 {
@@ -20,9 +21,9 @@ namespace _2048
     {
         public int[,] squares = new int[4, 4];
 
-        public GameBoard(int[,] newSquares)
+        public GameBoard(int[,] squares)
         {
-            squares = newSquares;
+            this.squares = squares;
         }
 
         public GameBoard move(Direction direction)
@@ -44,182 +45,54 @@ namespace _2048
 
         private GameBoard up()
         {
-            int[,] newSquares = new int[4, 4];
+            var newSquares = new int[4, 4];
             
             for (int i = 0; i < 4; i++)
             {
-                int[] oldColumn = getColumn(squares, i, 4);
-                int[] newColumn = collapseToFirst(oldColumn);
-                putColumn(newColumn, newSquares, i);
+                var oldColumn = ArrayHelper.getColumn(squares, i);
+                var newColumn = ArrayHelper.collapseToFirst(oldColumn);
+                ArrayHelper.putColumn(newColumn, newSquares, i);
             }
             return new GameBoard(newSquares);
         }
 
-        private void putColumn(int[] column, int[,] array, int index)
-        {
-            for (int i = 0; i < column.Length; i++)
-            {
-                array[i, index] = column[i];
-            }
-        }
-
-        private int[] getColumn(int[,] array, int index, int length)
-        {
-            int[] slice = new int[length];
-            for (int i = 0; i < length; i++)
-            {
-                slice[i] = array[i, index];
-            }
-            return slice;
-        }
-
-        private int[] collapseToFirst(int[] array)
-        {
-            int[] collapsedArray = new int[array.Length];
-            int nextSquare = 0;
-            for (int i = 0; i < array.Length; i++)
-            {
-                int found = 0;
-                for (int j = nextSquare; j < array.Length; j++)
-                {
-                    int value = array[j];
-                    if (value == 0) continue;
-                    if (found != 0)
-                    {
-                        if (value == found)
-                        {
-                            found = 2 * found;
-                            nextSquare = j + 1;
-                            break;
-                        }
-                        else if (j != 0)
-                        {
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        found = value;
-                        nextSquare = j + 1;
-                    }
-                }
-                collapsedArray[i] = found;
-            }
-            return collapsedArray;
-        }
-
         private GameBoard down()
         {
-            int[,] NewSquares = new int[4, 4];
+            int[,] newSquares = new int[4, 4];
+
             for (int i = 0; i < 4; i++)
             {
-                int nextSquare = 3;
-                for (int k = 3; k >= 0; k--)
-                {
-                    int found = 0;
-                    for (int j = nextSquare; j >= 0; j--)
-                    {
-                        int value = squares[j, i];
-                        if (value == 0) continue;
-                        if (found != 0)
-                        {
-                            if (value == found)
-                            {
-                                found = 2 * found;
-                                nextSquare = j - 1;
-                                break;
-                            }
-                            else if (j != 0)
-                            {
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            found = value;
-                            nextSquare = j - 1;
-                        }
-                    }
-                    NewSquares[k, i] = found;
-                }
+                var oldColumn = ArrayHelper.getColumn(squares, i);
+                var newColumn = ArrayHelper.collapseToLast(oldColumn);
+                ArrayHelper.putColumn(newColumn, newSquares, i);
             }
-            return new GameBoard(NewSquares);
+            return new GameBoard(newSquares);
         }
 
         private GameBoard left()
         {
-            int[,] NewSquares = new int[4, 4];
+            var newSquares = new int[4, 4];
+
             for (int i = 0; i < 4; i++)
             {
-                int nextSquare = 0;
-                for (int k = 0; k < 4; k++)
-                {
-                    int found = 0;
-                    for (int j = nextSquare; j < 4; j++)
-                    {
-                        int value = squares[i, j];
-                        if (value == 0) continue;
-                        if (found != 0)
-                        {
-                            if (value == found)
-                            {
-                                found = 2 * found;
-                                nextSquare = j + 1;
-                                break;
-                            }
-                            else if (j != 0)
-                            {
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            found = value;
-                            nextSquare = j + 1;
-                        }
-                    }
-                    NewSquares[i, k] = found;
-                }
+                var oldRow = ArrayHelper.getRow(squares, i);
+                var newRow = ArrayHelper.collapseToFirst(oldRow);
+                ArrayHelper.putRow(newRow, newSquares, i);
             }
-            return new GameBoard(NewSquares);
+            return new GameBoard(newSquares);
         }
 
         private GameBoard right()
         {
-            int[,] NewSquares = new int[4, 4];
+            var newSquares = new int[4, 4];
+
             for (int i = 0; i < 4; i++)
             {
-                int nextSquare = 3;
-                for (int k = 3; k >= 0; k--)
-                {
-                    int found = 0;
-                    for (int j = nextSquare; j >= 0; j--)
-                    {
-                        int value = squares[i, j];
-                        if (value == 0) continue;
-                        if (found != 0)
-                        {
-                            if (value == found)
-                            {
-                                found = 2 * found;
-                                nextSquare = j - 1;
-                                break;
-                            }
-                            else if (j != 0)
-                            {
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            found = value;
-                            nextSquare = j - 1;
-                        }
-                    }
-                    NewSquares[i, k] = found;
-                }
+                var oldRow = ArrayHelper.getRow(squares, i);
+                var newRow = ArrayHelper.collapseToLast(oldRow);
+                ArrayHelper.putRow(newRow, newSquares, i);
             }
-            return new GameBoard(NewSquares);
+            return new GameBoard(newSquares);
         }
 
         public override Boolean Equals(Object other)
@@ -233,6 +106,19 @@ namespace _2048
                 }
             }
             return true;
+        }
+
+        public override int GetHashCode()
+        {
+            int hc = 0;
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    hc = hc*7 + squares[i, j];
+                }
+            }
+            return hc;
         }
 
         internal GameBoard randomNewTile()
