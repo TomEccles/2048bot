@@ -36,7 +36,7 @@ namespace _2048
             for (int i = 0; i < 16; i++)
             {
                 var square = snakeOrder.ElementAt(i);
-                double current = board.Squares[square.Item1, square.Item2];
+                double current = board.squares[square.Item1, square.Item2];
                 if (current <= last && current > 0)
                 {
                     score += current;
@@ -55,7 +55,7 @@ namespace _2048
                         var trySquare = snakeOrder.ElementAt(j);
                         if (Math.Abs(trySquare.Item1 - tailSquare.Item1) + Math.Abs(trySquare.Item2 - tailSquare.Item2) == 1)
                         {
-                            int adjValue = board.Squares[trySquare.Item1, trySquare.Item2];
+                            int adjValue = board.squares[trySquare.Item1, trySquare.Item2];
                             if (adjValue > 0 && adjValue <= last)
                             {
                                 score += adjValue / 2;

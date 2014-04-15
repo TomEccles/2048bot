@@ -10,7 +10,7 @@ namespace _2048
         private Strategy strategy;
         private int rollouts;
 
-        public RollerOuter(Strategy strategy, int rollouts)
+        public RolloutEvaluator(Strategy strategy, int rollouts)
         {
             this.strategy = strategy;
             this.rollouts = rollouts;

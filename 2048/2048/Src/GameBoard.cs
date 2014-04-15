@@ -18,11 +18,11 @@ namespace _2048
 
     class GameBoard
     {
-        public int[,] Squares = new int[4, 4];
+        public int[,] squares = new int[4, 4];
 
-        public GameBoard(int[,] NewSquares)
+        public GameBoard(int[,] newSquares)
         {
-            Squares = NewSquares;
+            squares = newSquares;
         }
 
         public GameBoard move(Direction direction)
@@ -44,40 +44,68 @@ namespace _2048
 
         private GameBoard up()
         {
-            int[,] NewSquares = new int[4, 4];
+            int[,] newSquares = new int[4, 4];
+            
             for (int i = 0; i < 4; i++)
             {
-                int nextSquare = 0;
-                for (int k = 0; k < 4; k++)
+                int[] oldColumn = getColumn(squares, i, 4);
+                int[] newColumn = collapseToFirst(oldColumn);
+                putColumn(newColumn, newSquares, i);
+            }
+            return new GameBoard(newSquares);
+        }
+
+        private void putColumn(int[] column, int[,] array, int index)
+        {
+            for (int i = 0; i < column.Length; i++)
+            {
+                array[i, index] = column[i];
+            }
+        }
+
+        private int[] getColumn(int[,] array, int index, int length)
+        {
+            int[] slice = new int[length];
+            for (int i = 0; i < length; i++)
+            {
+                slice[i] = array[i, index];
+            }
+            return slice;
+        }
+
+        private int[] collapseToFirst(int[] array)
+        {
+            int[] collapsedArray = new int[array.Length];
+            int nextSquare = 0;
+            for (int i = 0; i < array.Length; i++)
+            {
+                int found = 0;
+                for (int j = nextSquare; j < array.Length; j++)
                 {
-                    int found = 0;
-                    for (int j = nextSquare; j < 4; j++)
+                    int value = array[j];
+                    if (value == 0) continue;
+                    if (found != 0)
                     {
-                        int value = Squares[j, i];
-                        if (value == 0) continue;
-                        if (found != 0)
+                        if (value == found)
                         {
-                            if (value == found)
-                            {
-                                found = 2 * found;
-                                nextSquare = j + 1;
-                                break;
-                            }
-                            else if (j != 0)
-                            {
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            found = value;
+                            found = 2 * found;
                             nextSquare = j + 1;
+                            break;
+                        }
+                        else if (j != 0)
+                        {
+                            break;
                         }
                     }
-                    NewSquares[k, i] = found;
+                    else
+                    {
+                        found = value;
+                        nextSquare = j + 1;
+                    }
                 }
+                collapsedArray[i] = found;
             }
-            return new GameBoard(NewSquares);
+            return collapsedArray;
         }
 
         private GameBoard down()
@@ -91,7 +119,7 @@ namespace _2048
                     int found = 0;
                     for (int j = nextSquare; j >= 0; j--)
                     {
-                        int value = Squares[j, i];
+                        int value = squares[j, i];
                         if (value == 0) continue;
                         if (found != 0)
                         {
@@ -129,7 +157,7 @@ namespace _2048
                     int found = 0;
                     for (int j = nextSquare; j < 4; j++)
                     {
-                        int value = Squares[i, j];
+                        int value = squares[i, j];
                         if (value == 0) continue;
                         if (found != 0)
                         {
@@ -167,7 +195,7 @@ namespace _2048
                     int found = 0;
                     for (int j = nextSquare; j >= 0; j--)
                     {
-                        int value = Squares[i, j];
+                        int value = squares[i, j];
                         if (value == 0) continue;
                         if (found != 0)
                         {
@@ -201,7 +229,7 @@ namespace _2048
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    if (Squares[i, j] != otherBoard.Squares[i, j]) return false;
+                    if (squares[i, j] != otherBoard.squares[i, j]) return false;
                 }
             }
             return true;
@@ -214,7 +242,7 @@ namespace _2048
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    if (Squares[i, j] == 0)
+                    if (squares[i, j] == 0)
                     {
                         empties.Add(new Tuple<int, int>(i, j));
                     }
@@ -223,7 +251,7 @@ namespace _2048
             int index = Program.rand.Next() % empties.Count();
             Tuple<int, int> square = empties.ElementAt(index);
             int[,] NewSquares = new int[4, 4];
-            Array.Copy(Squares, NewSquares, 16);
+            Array.Copy(squares, NewSquares, 16);
             NewSquares[square.Item1, square.Item2] = Program.rand.Next() % 10 == 0 ? 4 : 2;
             return new GameBoard(NewSquares);
         }
@@ -235,7 +263,7 @@ namespace _2048
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    if (Squares[i, j] > 0) total += Squares[i, j] * Math.Log(Squares[i, j]) / Math.Log(2);
+                    if (squares[i, j] > 0) total += squares[i, j] * Math.Log(squares[i, j]) / Math.Log(2);
                 }
             }
             return total;
@@ -248,7 +276,7 @@ namespace _2048
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    if (Squares[i, j] == 0)
+                    if (squares[i, j] == 0)
                     {
                         empties.Add(new Square(i, j, 2));
                         empties.Add(new Square(i, j, 4));
@@ -261,7 +289,7 @@ namespace _2048
         internal GameBoard withNewSquare(Square square)
         {
             int[,] NewSquares = new int[4, 4];
-            Array.Copy(Squares, NewSquares, 16);
+            Array.Copy(squares, NewSquares, 16);
             NewSquares[square.x, square.y] = square.number;
             return new GameBoard(NewSquares);
         }
@@ -273,7 +301,7 @@ namespace _2048
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    if (Squares[i, j] > 0) total += Squares[i, j];
+                    if (squares[i, j] > 0) total += squares[i, j];
                 }
             }
             return total;
@@ -285,7 +313,7 @@ namespace _2048
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    Console.Write("{0} ", Squares[i, j]);
+                    Console.Write("{0} ", squares[i, j]);
                 }
                 Console.WriteLine();
             }

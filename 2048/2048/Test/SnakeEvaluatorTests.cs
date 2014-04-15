@@ -8,7 +8,7 @@ using _2048;
 namespace _2048Test
 {
     [TestFixture]
-    public class TestFixture1
+    public class SnakeEvaluatorTests
     {
         [Test]
         public void FullSnake()

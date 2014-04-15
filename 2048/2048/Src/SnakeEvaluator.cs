@@ -36,7 +36,7 @@ namespace _2048
             for (int i = 0; i < 16; i++)
             {
                 var square = snakeOrder.ElementAt(i);
-                double current = board.Squares[square.Item2, square.Item1];
+                double current = board.squares[square.Item2, square.Item1];
                 if (current > last)
                 {
                     score -= current * Math.Log(current - last) / Math.Log(2);

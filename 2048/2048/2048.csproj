@@ -74,11 +74,11 @@
     <Compile Include="Src\PositionEvaluator.cs" />
     <Compile Include="Src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Src\RolloutEvaluater.cs" />
+    <Compile Include="Src\RolloutEvaluator.cs" />
     <Compile Include="Src\SnakeEvaluator.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Src\SnakeEvaluator2.cs" />
+    <Compile Include="Src\SnakeEvaluatorTwo.cs" />
     <Compile Include="Src\Square.cs" />
     <Compile Include="Src\Strategy.cs" />
     <Compile Include="Src\TreeStrategy.cs" />
@@ -86,7 +86,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Src\UpLeftStrategy.cs" />
-    <Compile Include="Src\WebsiteController.cs" />
+    <Compile Include="Src\RealController.cs" />
+    <Compile Include="Test\GameBoardTests.cs" />
     <Compile Include="Test\SnakeEvaluatorTests.cs" />
   </ItemGroup>
   <ItemGroup>

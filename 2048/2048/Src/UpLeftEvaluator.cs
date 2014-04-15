@@ -14,7 +14,7 @@ namespace _2048
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    if (board.Squares[i, j] > 0) score -= i + j;
+                    if (board.squares[i, j] > 0) score -= i + j;
                 }
             }
             return score;
