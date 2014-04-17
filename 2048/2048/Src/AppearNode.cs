@@ -7,6 +7,8 @@ namespace _2048
 {
     class AppearNode : GameNode
     {
+        public static int instances; 
+
         private List<Tuple<MoveNode, double>> children;
         Boolean childrenEvaluated;
 
@@ -16,6 +18,7 @@ namespace _2048
 
         public AppearNode(GameBoard board, Direction moveDirection, PositionEvaluator evaluator)
         {
+            instances++;
             this.board = board.move(moveDirection);
             this.lastDirection = moveDirection;
             this.evaluator = evaluator;
@@ -23,6 +26,7 @@ namespace _2048
 
         private Tuple<MoveNode, double> getChild(Square square)
         {
+            instances++;
             MoveNode node = new MoveNode(board, square, evaluator);
             if (square.number == 2) return Tuple.Create(node, 0.9);
             else return Tuple.Create(node, 0.1);

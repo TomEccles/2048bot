@@ -7,6 +7,7 @@ namespace _2048
 {
     class MoveNode : GameNode
     {
+        public static int instances;
         private List<AppearNode> children;
         private GameBoard board;
         private PositionEvaluator evaluator;
@@ -14,12 +15,14 @@ namespace _2048
 
         public MoveNode(GameBoard board, Square square, PositionEvaluator evaluator)
         {
+            instances++;
             this.board = board.withNewSquare(square);
             this.evaluator = evaluator;
         }
 
         public MoveNode(GameBoard board, PositionEvaluator evaluator)
         {
+            instances++;
             this.board = board;
             this.evaluator = evaluator;
         }

@@ -2,16 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 
 namespace _2048
 {
     class GameLogger
     {
         List<GameBoard> gameLog;
+        private Stopwatch timer;
 
         public GameLogger()
         {
             gameLog = new List<GameBoard>();
+            AppearNode.instances = 0;
+            MoveNode.instances = 0;
+            timer = Stopwatch.StartNew();
         }
 
         public void append(GameBoard board)
@@ -21,24 +26,37 @@ namespace _2048
 
         public void output()
         {
+            Console.WriteLine("{0} nodes evaluated in {1} milliseconds; average time {2}ms", AppearNode.instances + MoveNode.instances, timer.ElapsedMilliseconds, (double)timer.ElapsedMilliseconds / (AppearNode.instances + MoveNode.instances));
+            int lastBoard = 0;
             while (true)
             {
-                Console.WriteLine("Enter command for logger. To print a board (0 to {0}), enter a number. To quit, press q");
+                Console.WriteLine("Enter command for logger. To print a board (0 to {0}), enter a number. n for next, p for previous. To quit, press q", gameLog.Count - 1);
                 String input = Console.ReadLine();
-                int result;
+                int nextBoard = -1;
                 if (input.Equals("q"))
                 {
                     break;
                 }
-                else if (Int32.TryParse(input, out result))
+                else if (input.Equals("p"))
                 {
-                    if (0 <= result && result < gameLog.Count) gameLog.ElementAt(result).print();
-                    else Console.WriteLine("bad input");
+                    nextBoard = lastBoard - 1;
+                }
+                else if (input.Equals("n"))
+                {
+                    nextBoard = lastBoard + 1;
                 }
                 else
                 {
-                    Console.WriteLine("bad input");
+                    Int32.TryParse(input, out nextBoard);                 
                 }
+
+                if (0 <= nextBoard && nextBoard < gameLog.Count)
+                {
+                    gameLog.ElementAt(nextBoard).print();
+                    lastBoard = nextBoard;
+                }
+                else Console.WriteLine("bad input");
+
             }
         }
     }

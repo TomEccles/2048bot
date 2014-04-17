@@ -33,7 +33,8 @@ namespace _2048
         {
             double score = 1;
             double last = 10000000;
-            for (int i = 0; i < 16; i++)
+            int i;
+            for (i = 0; i < 16; i++)
             {
                 var square = snakeOrder.ElementAt(i);
                 double current = board.squares[square.Item1, square.Item2];
@@ -64,6 +65,11 @@ namespace _2048
                     }
                     break;
                 }
+            }
+            for (; i < 16; i++)
+            {
+                var square = snakeOrder.ElementAt(i);
+                score -= board.squares[square.Item1, square.Item2] * 8;
             }
             return score;
         }
