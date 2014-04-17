@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Timers;
 using System.Diagnostics;
+using _2048.Src;
 
 namespace _2048
 {
@@ -13,10 +14,15 @@ namespace _2048
         private int moveTimeInMs;
         private MoveNode rootNode;
 
+        private NodeCache<MoveNode> moveNodeCache;
+        private NodeCache<AppearNode> appearNodeCache;
+
         public TreeStrategy(PositionEvaluator evaluator, int moveTimeInMs)
         {
             this.evaluator = evaluator;
             this.moveTimeInMs = moveTimeInMs;
+            moveNodeCache = new NodeCache<MoveNode>(evaluator);
+            appearNodeCache = new NodeCache<AppearNode>(evaluator);
         }
 
         public Direction getDirection(GameBoard board)
@@ -24,6 +30,11 @@ namespace _2048
             Stopwatch timer = Stopwatch.StartNew();
             int level = 0;
             rootNode = new MoveNode(board, evaluator);
+
+            moveNodeCache.clearBelow(board.sum());
+            appearNodeCache.clearBelow(board.sum());
+
+            rootNode = moveNodeCache.getNode(board);
 
             List<GameNode> bottomNodes = new List<GameNode>();
             bottomNodes.Add(rootNode);
