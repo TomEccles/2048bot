@@ -41,7 +41,11 @@ namespace _2048
                 if (current <= last && current > 0)
                 {
                     score += current;
-                    if (i == 4 && current == last) break;
+                    if (i == 4 && current == last)
+                    {
+                        i++;
+                        break;
+                    }
                     last = current;
                 }
                 else if (i == 0 || current == 0)
@@ -59,7 +63,7 @@ namespace _2048
                             int adjValue = board.squares[trySquare.Item1, trySquare.Item2];
                             if (adjValue > 0 && adjValue <= last)
                             {
-                                score += adjValue / 2;
+                                score += 4 * adjValue;
                             }
                         }
                     }

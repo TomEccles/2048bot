@@ -35,7 +35,7 @@ namespace _2048Test
                                              {0, 0, 0 , 0}
                                              }
                                            );
-            Assert.AreEqual(1 + 64 + 16 + 8, evaluator.score(board));
+            Assert.AreEqual(1 + 64 + 16 + 8 - 8*(16 + 16), evaluator.score(board));
         }
 
 
@@ -45,7 +45,7 @@ namespace _2048Test
             PositionEvaluator evaluator = new SnakeEvaluatorTwo();
             GameBoard board = new GameBoard(new int[,]{
                                              {64, 16, 16 , 8},
-                                             {64, 4, 4 , 4},
+                                             {0, 4, 4 , 4},
                                              {0, 0, 0 , 0},
                                              {0, 0, 0 , 0}
                                              }
@@ -59,12 +59,12 @@ namespace _2048Test
             PositionEvaluator evaluator = new SnakeEvaluatorTwo();
             GameBoard board = new GameBoard(new int[,]{
                                              {64, 16, 16 , 8},
-                                             {64, 4, 4 , 8},
-                                             {64, 16, 0 , 0},
-                                             {64, 16, 0 , 0}
+                                             {0, 4, 4 , 8},
+                                             {0, 0, 0 , 0},
+                                             {0, 0, 0 , 0}
                                              }
                                            );
-            Assert.AreEqual(1 + 64 + 16 + 16 + 8 + 8, evaluator.score(board));
+            Assert.AreEqual(1 + 64 + 16 + 16 + 8 + 8 - 8*(4 + 4), evaluator.score(board));
         }
 
         [Test]
@@ -78,7 +78,7 @@ namespace _2048Test
                                              {0, 0, 0 , 0}
                                              }
                                            );
-            Assert.AreEqual(1 + 64 + 16 + 16 + 8 + 4 + 2/2, evaluator.score(board));
+            Assert.AreEqual(1 + 64 + 16 + 16 + 8 + 4 + 4*2 - 8*(8+2), evaluator.score(board));
         }
     }
 }
