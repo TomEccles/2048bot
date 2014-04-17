@@ -24,7 +24,7 @@ namespace _2048
 
         public void output()
         {
-            //Console.WriteLine("{0} nodes evaluated in {1} milliseconds; average time {2}ms", 0, timer.ElapsedMilliseconds, (double)timer.ElapsedMilliseconds / (AppearNode.instances + MoveNode.instances));
+            Console.WriteLine("{0} nodes evaluated in {1} milliseconds; average time {2}ms", NodeCache.nodesRetrieved, timer.ElapsedMilliseconds, (double)timer.ElapsedMilliseconds/NodeCache.nodesRetrieved);
             int lastBoard = 0;
             while (true)
             {
