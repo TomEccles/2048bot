@@ -5,80 +5,56 @@ using System.Text;
 
 namespace _2048
 {
-    class MoveNode : GameNode
+    public class MoveNode : GameNode
     {
-        public static int instances;
-        private List<AppearNode> children;
-        private GameBoard board;
-        private PositionEvaluator evaluator;
-        Boolean childrenEvaluated;
+        public List<Tuple<Direction, AppearNode>> children;
 
-        public MoveNode(GameBoard board, Square square, PositionEvaluator evaluator)
+        public MoveNode(GameBoard board)
         {
-            instances++;
-            this.board = board.withNewSquare(square);
-            this.evaluator = evaluator;
-        }
-
-        public MoveNode(GameBoard board, PositionEvaluator evaluator)
-        {
-            instances++;
             this.board = board;
-            this.evaluator = evaluator;
         }
 
-        public List<GameNode> getChildren()
+        public override List<GameNode> getChildren()
         {
-            return children.Cast<GameNode>().ToList();
+            return children.Select(child => child.Item2).Cast<GameNode>().ToList();
         }
 
-        public void calculateChildren()
+        public override void evaluateChildren(NodeCache nodeCache)
         {
-            childrenEvaluated = true;
-            children = new List<AppearNode>();
-            foreach (Direction moveDirection in (Direction[])Enum.GetValues(typeof(Direction)))
+            if (!childrenEvaluated)
             {
-                if (moveDirection == Direction.None) continue;
-                if (moveDirection == Direction.Down) continue;
-                if (board.move(moveDirection).Equals(board)) continue;
-
-                AppearNode child = new AppearNode(board, moveDirection, evaluator);
-                children.Add(child);
-            }
-            if (!children.Any())
-            {
-                Direction moveDirection = Direction.Down;
-                if (!board.move(moveDirection).Equals(board))
+                childrenEvaluated = true;
+                children = new List<Tuple<Direction, AppearNode>>();
+                foreach (Direction moveDirection in (Direction[])Enum.GetValues(typeof(Direction)))
                 {
-                    AppearNode child = new AppearNode(board, moveDirection, evaluator);
-                    children.Add(child);
+                    if (moveDirection == Direction.None) continue;
+                    if (moveDirection == Direction.Down) continue;
+                    if (board.move(moveDirection).Equals(board)) continue;
+
+                    GameBoard newBoard = board.move(moveDirection);
+                    AppearNode child = nodeCache.getAppearNode(newBoard);
+                    children.Add(Tuple.Create(moveDirection, child));
+                }
+                if (!children.Any())
+                {
+                    Direction moveDirection = Direction.Down;
+                    if (!board.move(moveDirection).Equals(board))
+                    {
+                        GameBoard newBoard = board.move(moveDirection);
+                        AppearNode child = nodeCache.getAppearNode(newBoard);
+                        children.Add(Tuple.Create(moveDirection, child));
+                    }
                 }
             }
         }
 
-        public double score()
+        public Direction bestDirection(PositionEvaluator evaluator)
         {
             if (childrenEvaluated)
             {
                 if (children.Any())
                 {
-                    return children.Select(child => child.score()).Max();
-                }
-                else return 0;
-            }
-            else
-            {
-                return evaluator.score(board);
-            }
-        }
-
-        public Direction bestDirection()
-        {
-            if (childrenEvaluated)
-            {
-                if (children.Any())
-                {
-                    return children.OrderByDescending(child => child.score()).ElementAt(0).lastDirection;
+                    return children.OrderByDescending(child => child.Item2.score(evaluator)).ElementAt(0).Item1;
                 }
                 return Direction.None;
             }
@@ -86,6 +62,27 @@ namespace _2048
             {
                 throw new Exception("Can't get best direction - no children evaluated");
             }
+        }
+
+        protected override double evaluateScore(PositionEvaluator evaluator)
+        {
+            scoreEvaluated = true;
+            if (childrenEvaluated)
+            {
+                if (children.Any())
+                {
+                    calculatedScore = children.Select(child => child.Item2.score(evaluator)).Max();
+                }
+                else
+                {
+                    calculatedScore = 0;
+                }
+            }
+            else
+            {
+                calculatedScore = evaluator.score(board);
+            }
+            return calculatedScore;
         }
     }
 }

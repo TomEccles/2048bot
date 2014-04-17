@@ -5,12 +5,33 @@ using System.Text;
 
 namespace _2048
 {
-    interface GameNode
+    public abstract class GameNode
     {
-        List<GameNode> getChildren();
+        protected Boolean childrenEvaluated;
 
-        void calculateChildren();
+        protected Boolean scoreEvaluated;
+        protected double calculatedScore;
 
-        double score();
+        protected GameBoard board;
+
+        public abstract List<GameNode> getChildren();
+
+        public abstract void evaluateChildren(NodeCache nodeCache);
+
+        public double score(PositionEvaluator evaluator)
+        {
+            if (!scoreEvaluated)
+            {
+                evaluateScore(evaluator);
+            }
+            return calculatedScore;
+        }
+
+        public void clearScore()
+        {
+            scoreEvaluated = false;
+        }
+
+        protected abstract double evaluateScore(PositionEvaluator evalauator);
     }
 }

@@ -2,27 +2,50 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using _2048.Src;
 
-namespace _2048.Src
+namespace _2048
 {
-    class NodeCache<T>
+    public class NodeCache
     {
-        private PositionEvaluator evaluator;
+        private Dictionary<int, SingleLevelCache> sumToCache;
 
-        public NodeCache(PositionEvaluator evaluator)
+        public NodeCache()
         {
-            // TODO: Complete member initialization
-            this.evaluator = evaluator;
+            sumToCache = new Dictionary<int,SingleLevelCache>();
         }
 
         internal void clearBelow(int threshhold)
         {
-            throw new NotImplementedException();
+            List<int> smallKeys = new List<int>();
+            foreach (int level in sumToCache.Keys)
+            {
+                if (level < threshhold) smallKeys.Add(level);
+            }
+            foreach (int key in smallKeys)
+            {
+                sumToCache.Remove(key);
+            }
         }
 
-        internal MoveNode getNode(GameBoard board)
+        internal MoveNode getMoveNode(GameBoard board)
         {
-            throw new NotImplementedException();
+            int sum = board.sum();
+            if (!sumToCache.ContainsKey(sum))
+            {
+                sumToCache.Add(sum, new SingleLevelCache());
+            }
+            return sumToCache[sum].getMoveNode(board);
+        }
+
+        internal AppearNode getAppearNode(GameBoard board)
+        {
+            int sum = board.sum();
+            if (!sumToCache.ContainsKey(sum))
+            {
+                sumToCache.Add(sum, new SingleLevelCache());
+            }
+            return sumToCache[sum].getAppearNode(board);
         }
     }
 }

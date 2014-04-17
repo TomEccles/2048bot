@@ -73,10 +73,12 @@
     <Compile Include="Src\GameNode.cs" />
     <Compile Include="Src\MockController.cs" />
     <Compile Include="Src\MoveNode.cs" />
+    <Compile Include="Src\NodeCache.cs" />
     <Compile Include="Src\PositionEvaluator.cs" />
     <Compile Include="Src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Src\RolloutEvaluator.cs" />
+    <Compile Include="Src\SingleLevelCache.cs" />
     <Compile Include="Src\SnakeEvaluator.cs">
       <SubType>Code</SubType>
     </Compile>

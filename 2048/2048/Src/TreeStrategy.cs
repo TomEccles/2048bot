@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Timers;
 using System.Diagnostics;
-using _2048.Src;
 
 namespace _2048
 {
@@ -14,27 +13,24 @@ namespace _2048
         private int moveTimeInMs;
         private MoveNode rootNode;
 
-        private NodeCache<MoveNode> moveNodeCache;
-        private NodeCache<AppearNode> appearNodeCache;
+        private NodeCache nodeCache;
 
         public TreeStrategy(PositionEvaluator evaluator, int moveTimeInMs)
         {
             this.evaluator = evaluator;
             this.moveTimeInMs = moveTimeInMs;
-            moveNodeCache = new NodeCache<MoveNode>(evaluator);
-            appearNodeCache = new NodeCache<AppearNode>(evaluator);
+            nodeCache = new NodeCache();
         }
 
         public Direction getDirection(GameBoard board)
         {
             Stopwatch timer = Stopwatch.StartNew();
             int level = 0;
-            rootNode = new MoveNode(board, evaluator);
+            rootNode = new MoveNode(board);
 
-            moveNodeCache.clearBelow(board.sum());
-            appearNodeCache.clearBelow(board.sum());
+            nodeCache.clearBelow(board.sum());
 
-            rootNode = moveNodeCache.getNode(board);
+            rootNode = nodeCache.getMoveNode(board);
 
             List<GameNode> bottomNodes = new List<GameNode>();
             bottomNodes.Add(rootNode);
@@ -44,13 +40,13 @@ namespace _2048
                 List<GameNode> newNodes = new List<GameNode>();
                 foreach (GameNode node in bottomNodes)
                 {
-                    node.calculateChildren();
+                    node.evaluateChildren(nodeCache);
                     newNodes.AddRange(node.getChildren());
                 }
                 bottomNodes = newNodes;
             }
             Console.WriteLine(level);
-            return rootNode.bestDirection();
+            return rootNode.bestDirection(evaluator);
         }
     }
 }
