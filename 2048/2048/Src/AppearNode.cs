@@ -5,53 +5,57 @@ using System.Text;
 
 namespace _2048
 {
-    public class AppearNode : GameNode
+    class AppearNode : GameNode
     {
-        private List<Tuple<MoveNode, double>> children;
+        public static int instances; 
 
+        private List<Tuple<MoveNode, double>> children;
+        Boolean childrenEvaluated;
+
+        private GameBoard board;
+        private PositionEvaluator evaluator;
         public Direction lastDirection;
 
-        public AppearNode(GameBoard board)
+        public AppearNode(GameBoard board, Direction moveDirection, PositionEvaluator evaluator)
         {
-            this.board = board;
+            instances++;
+            this.board = board.move(moveDirection);
+            this.lastDirection = moveDirection;
+            this.evaluator = evaluator;
         }
 
-        public override List<GameNode> getChildren()
-        {   
-            return children.Select(child => child.Item1).Cast<GameNode>().ToList();
-        }
-
-        public override void evaluateChildren(NodeCache nodeCache)
+        private Tuple<MoveNode, double> getChild(Square square)
         {
-            if (!childrenEvaluated)
-            {
-                childrenEvaluated = true;
-                List<Square> appearSquares = board.GetAppearSquare();
-                children = appearSquares.Select(square => getChild(nodeCache, square)).ToList();
-            }
-        }
-
-        private Tuple<MoveNode, double> getChild(NodeCache nodeCache, Square square)
-        {
-            GameBoard newBoard = board.withNewSquare(square);
-            MoveNode node = nodeCache.getMoveNode(newBoard);
+            instances++;
+            MoveNode node = new MoveNode(board, square, evaluator);
             if (square.number == 2) return Tuple.Create(node, 0.9);
             else return Tuple.Create(node, 0.1);
         }
 
-        protected override double evaluateScore(PositionEvaluator evaluator)
+        public List<GameNode> getChildren()
+        {   
+            return children.Select(child => child.Item1).Cast<GameNode>().ToList();
+        }
+
+        public void calculateChildren()
         {
-            scoreEvaluated = true;
+            childrenEvaluated = true;
+            List<Square> appearSquares = board.GetAppearSquare();
+            children = appearSquares.Select(square => getChild(square)).ToList();
+        }
+
+        public double score()
+        {
             if (childrenEvaluated)
             {
-                List<double> childScores = children.Select(child => child.Item1.score(evaluator) * child.Item2 * 2).ToList();
-                calculatedScore = 0.9 * childScores.Average() + 0.1 * evaluator.score(board);
+                List<double> childScores = children.Select(child => child.Item1.score() * child.Item2 * 2).ToList();
+                return 0.9 * childScores.Average() + 0.1 * evaluator.score(board);
             }
             else
             {
-                calculatedScore = evaluator.score(board);
+                return evaluator.score(board);
             }
-            return calculatedScore;
         }
+
     }
 }

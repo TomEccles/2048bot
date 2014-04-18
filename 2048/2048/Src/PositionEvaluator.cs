@@ -5,7 +5,7 @@ using System.Text;
 
 namespace _2048
 {
-    public interface PositionEvaluator
+    interface PositionEvaluator
     {
         double score(GameBoard board);
     }

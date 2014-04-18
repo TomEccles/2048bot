@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace _2048
 {
-    public class GameLogger
+    class GameLogger
     {
         List<GameBoard> gameLog;
         private Stopwatch timer;
@@ -14,6 +14,8 @@ namespace _2048
         public GameLogger()
         {
             gameLog = new List<GameBoard>();
+            AppearNode.instances = 0;
+            MoveNode.instances = 0;
             timer = Stopwatch.StartNew();
         }
 
@@ -24,7 +26,7 @@ namespace _2048
 
         public void output()
         {
-            //Console.WriteLine("{0} nodes evaluated in {1} milliseconds; average time {2}ms", 0, timer.ElapsedMilliseconds, (double)timer.ElapsedMilliseconds / (AppearNode.instances + MoveNode.instances));
+            Console.WriteLine("{0} nodes evaluated in {1} milliseconds; average time {2}ms", AppearNode.instances + MoveNode.instances, timer.ElapsedMilliseconds, (double)timer.ElapsedMilliseconds / (AppearNode.instances + MoveNode.instances));
             int lastBoard = 0;
             while (true)
             {

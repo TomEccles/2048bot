@@ -5,56 +5,80 @@ using System.Text;
 
 namespace _2048
 {
-    public class MoveNode : GameNode
+    class MoveNode : GameNode
     {
-        public List<Tuple<Direction, AppearNode>> children;
+        public static int instances;
+        private List<AppearNode> children;
+        private GameBoard board;
+        private PositionEvaluator evaluator;
+        Boolean childrenEvaluated;
 
-        public MoveNode(GameBoard board)
+        public MoveNode(GameBoard board, Square square, PositionEvaluator evaluator)
         {
+            instances++;
+            this.board = board.withNewSquare(square);
+            this.evaluator = evaluator;
+        }
+
+        public MoveNode(GameBoard board, PositionEvaluator evaluator)
+        {
+            instances++;
             this.board = board;
+            this.evaluator = evaluator;
         }
 
-        public override List<GameNode> getChildren()
+        public List<GameNode> getChildren()
         {
-            return children.Select(child => child.Item2).Cast<GameNode>().ToList();
+            return children.Cast<GameNode>().ToList();
         }
 
-        public override void evaluateChildren(NodeCache nodeCache)
+        public void calculateChildren()
         {
-            if (!childrenEvaluated)
+            childrenEvaluated = true;
+            children = new List<AppearNode>();
+            foreach (Direction moveDirection in (Direction[])Enum.GetValues(typeof(Direction)))
             {
-                childrenEvaluated = true;
-                children = new List<Tuple<Direction, AppearNode>>();
-                foreach (Direction moveDirection in (Direction[])Enum.GetValues(typeof(Direction)))
-                {
-                    if (moveDirection == Direction.None) continue;
-                    if (moveDirection == Direction.Down) continue;
-                    if (board.move(moveDirection).Equals(board)) continue;
+                if (moveDirection == Direction.None) continue;
+                if (moveDirection == Direction.Down) continue;
+                if (board.move(moveDirection).Equals(board)) continue;
 
-                    GameBoard newBoard = board.move(moveDirection);
-                    AppearNode child = nodeCache.getAppearNode(newBoard);
-                    children.Add(Tuple.Create(moveDirection, child));
-                }
-                if (!children.Any())
+                AppearNode child = new AppearNode(board, moveDirection, evaluator);
+                children.Add(child);
+            }
+            if (!children.Any())
+            {
+                Direction moveDirection = Direction.Down;
+                if (!board.move(moveDirection).Equals(board))
                 {
-                    Direction moveDirection = Direction.Down;
-                    if (!board.move(moveDirection).Equals(board))
-                    {
-                        GameBoard newBoard = board.move(moveDirection);
-                        AppearNode child = nodeCache.getAppearNode(newBoard);
-                        children.Add(Tuple.Create(moveDirection, child));
-                    }
+                    AppearNode child = new AppearNode(board, moveDirection, evaluator);
+                    children.Add(child);
                 }
             }
         }
 
-        public Direction bestDirection(PositionEvaluator evaluator)
+        public double score()
         {
             if (childrenEvaluated)
             {
                 if (children.Any())
                 {
-                    return children.OrderByDescending(child => child.Item2.score(evaluator)).ElementAt(0).Item1;
+                    return children.Select(child => child.score()).Max();
+                }
+                else return 0;
+            }
+            else
+            {
+                return evaluator.score(board);
+            }
+        }
+
+        public Direction bestDirection()
+        {
+            if (childrenEvaluated)
+            {
+                if (children.Any())
+                {
+                    return children.OrderByDescending(child => child.score()).ElementAt(0).lastDirection;
                 }
                 return Direction.None;
             }
@@ -62,27 +86,6 @@ namespace _2048
             {
                 throw new Exception("Can't get best direction - no children evaluated");
             }
-        }
-
-        protected override double evaluateScore(PositionEvaluator evaluator)
-        {
-            scoreEvaluated = true;
-            if (childrenEvaluated)
-            {
-                if (children.Any())
-                {
-                    calculatedScore = children.Select(child => child.Item2.score(evaluator)).Max();
-                }
-                else
-                {
-                    calculatedScore = 0;
-                }
-            }
-            else
-            {
-                calculatedScore = evaluator.score(board);
-            }
-            return calculatedScore;
         }
     }
 }

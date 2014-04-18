@@ -16,7 +16,7 @@ namespace _2048
         None
     }
 
-    public class GameBoard
+    class GameBoard
     {
         public int[,] squares = new int[4, 4];
 
