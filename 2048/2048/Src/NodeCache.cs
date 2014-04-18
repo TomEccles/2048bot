@@ -9,11 +9,9 @@ namespace _2048
     public class NodeCache
     {
         private Dictionary<int, SingleLevelCache> sumToCache;
-        public static int nodesRetrieved = 0;
 
         public NodeCache()
         {
-            nodesRetrieved = 0;
             sumToCache = new Dictionary<int,SingleLevelCache>();
         }
 
@@ -32,7 +30,6 @@ namespace _2048
 
         internal MoveNode getMoveNode(GameBoard board)
         {
-            nodesRetrieved++;
             int sum = board.sum();
             if (!sumToCache.ContainsKey(sum))
             {
@@ -43,7 +40,6 @@ namespace _2048
 
         internal AppearNode getAppearNode(GameBoard board)
         {
-            nodesRetrieved++;
             int sum = board.sum();
             if (!sumToCache.ContainsKey(sum))
             {
