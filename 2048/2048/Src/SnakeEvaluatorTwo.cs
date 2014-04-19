@@ -63,18 +63,20 @@ namespace _2048
                             int adjValue = board.squares[trySquare.Item1, trySquare.Item2];
                             if (adjValue > 0 && adjValue <= last)
                             {
-                                score += 4 * adjValue;
+                                score += adjValue/2;
                             }
                         }
                     }
                     break;
                 }
             }
+            int badScore = 0;
             for (; i < 16; i++)
             {
                 var square = snakeOrder.ElementAt(i);
-                score -= board.squares[square.Item1, square.Item2] * 8;
+                badScore += board.squares[square.Item1, square.Item2] * 8;
             }
+            score -= Math.Min(badScore, score / 8);
             return score;
         }
     }

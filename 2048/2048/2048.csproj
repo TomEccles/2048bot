@@ -90,7 +90,6 @@
     <Compile Include="Src\UpLeftStrategy.cs" />
     <Compile Include="Src\RealController.cs" />
     <Compile Include="Test\GameBoardTests.cs" />
-    <Compile Include="Test\NodeCacheTests.cs" />
     <Compile Include="Test\SnakeEvaluatorTests.cs" />
   </ItemGroup>
   <ItemGroup>
